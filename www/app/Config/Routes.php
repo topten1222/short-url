@@ -33,6 +33,9 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
+$routes->post('short-url', 'Home::shortUrl');
+$routes->get('404', 'Home::notFound');
+$routes->get('(:any)', 'Home::redirectAlias');
 
 /*
  * --------------------------------------------------------------------
