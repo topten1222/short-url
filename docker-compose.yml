@@ -3,7 +3,7 @@ services:
 
   db:
     image: mariadb:10.1
-    build: .
+#    build: .
     ports:
       - "3306:3306"
     volumes:
@@ -11,11 +11,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=jigsaw
-      - MYSQL_USER=short
+      - MYSQL_USER=root
       - MYSQL_PASSWORD=123456
       - TZ=Asia/Bangkok
-    command:
-      'mysqld --innodb-flush-method=fsync'
+#    command:
+#      'mysqld --innodb-flush-method=fsync'
 
   php:
     build: ./php
