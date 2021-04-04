@@ -35,6 +35,7 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
 $routes->post('short-url', 'Home::shortUrl');
 $routes->get('404', 'Home::notFound');
+$routes->get('download/(:alphanum)', 'Home::forceDownloadQR/$1');
 $routes->get('(:any)', 'Home::redirectAlias');
 
 /*

@@ -60,4 +60,16 @@ class Home extends BaseController
     {
         return view('not-found');
     }
+
+    public function forceDownloadQR($alias)
+    {
+        $url = "https://chart.googleapis.com/chart?cht=qr&chl=".base_url($alias)."&chs=200x200&choe=UTF-8";
+        $file = file_get_contents($url);
+        header("Content-type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=".$alias.".png");
+        header("Cache-Control: public");
+        header("Content-length: " . strlen($file)); // tells file size
+        header("Pragma: no-cache");
+        echo $file;
+    }
 }

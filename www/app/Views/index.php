@@ -19,9 +19,10 @@
                 <div class="row py-4">
                     <?php foreach ($shortUrls as $shortUrl) {
                         /* @var $shortUrl \App\Models\ShortUrlModel */
+                        $qrCode = "https://chart.googleapis.com/chart?cht=qr&chl=" . base_url($shortUrl['alias']);
                         ?>
-                        <div class="col-12 result">
-                            <div class="url_options rounded-6" id="0">
+                        <div class="col-8">
+                            <div class="url_options rounded-6">
                                 <p class="nazwa_link">Expired Date: <?= $shortUrl['expire_date'] ?></p>
                                 <p class="data_link">
                                     <?= date('Y-m-d', strtotime($shortUrl['created_date'])) ?>
@@ -32,7 +33,8 @@
                                     </a>
                                 </p>
                                 <p id="link" class="link_element">
-                                    <a href="<?= base_url($shortUrl['alias']) ?>" class="short_url_l" target="blank">
+                                    <a href="<?= base_url($shortUrl['alias']) ?>" class="short_url_l"
+                                       target="blank">
                                         <?= base_url($shortUrl['alias']) ?>
                                     </a>
                                 </p>
@@ -48,6 +50,17 @@
                                     </svg>
                                     <span><b class="badge"><?= $shortUrl['hits'] ?></b>clicks</span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="url_options rounded-6" style="text-align: center">
+                                <a href="<?= $qrCode ?>&chs=200x200&choe=UTF-8" target="_blank">
+                                    <img src="<?= $qrCode ?>&chs=150x150&choe=UTF-8">
+                                </a>
+                                <hr>
+                                <a href="<?= base_url('download/' . $shortUrl['alias']) ?>">
+                                    <button type="button" class="btn btn-primary">Download</button>
+                                </a>
                             </div>
                         </div>
                     <?php } ?>
