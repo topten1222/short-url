@@ -49,7 +49,11 @@ class Home extends BaseController
         $model = new ShortUrlModel();
         $shortUrl = $model->where(['alias' => $alias])->first();
         if ($shortUrl) {
-            //todo check expired
+            $currentDate = date('Y-m-d');
+            $expireDate = $shortUrl['expire_date'];
+            if ($currentDate > $expireDate) {
+                return redirect('404');
+            }
             $model->update(['id' => $shortUrl['id']], ['hits' => $shortUrl['hits'] + 1]);
             return redirect()->to($shortUrl['url']);
         }
