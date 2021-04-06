@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ShortUrlModel;
+use PHPQRCode\QRcode;
 
 class Home extends BaseController
 {
@@ -18,16 +19,30 @@ class Home extends BaseController
         ]);
     }
 
+    public function items()
+    {
+        $model = new ShortUrlModel();
+        if (isset($_COOKIE['shortUrls'])) {
+            $alias = explode(',', $_COOKIE['shortUrls']);
+            $shortUrls = $model->whereIn('alias', $alias)->findAll();
+        }
+        return view('items', [
+            'shortUrls' => isset($shortUrls) ? $shortUrls : [],
+        ]);
+    }
+
     public function shortUrl()
     {
         helper('text');
         $model = new ShortUrlModel();
         if ($this->request->isAJAX()) {
+            $alias = random_string('alnum', 5);
+            QRcode::png(base_url($alias), FCPATH.'uploads/'.$alias.'.png', 'M', 4, 2);
             $array = [
                 'url' => $this->request->getVar('url'),
-                'alias' => random_string('alnum', 5),
+                'alias' => $alias,
                 'hits' => 0,
-                'expire_date' => date('Y-m-d', strtotime(' +1 day'))
+                'expire_date' => date('Y-m-d H:i:s', strtotime($this->request->getVar('expire_date'))),
             ];
             if (!$model->save($array)) {
                 return $this->response->setStatusCode('400')->setJSON(['message' => json_encode($model->errors())]);
@@ -35,8 +50,8 @@ class Home extends BaseController
             $dataReturns = [
                 'alias' => $array['alias'],
                 'date' => date('Y-m-d'),
-                'expired_date' => date('Y-m-d', strtotime(' +1 day')),
-                'url' => $this->request->getVar('url')
+                'expired_date' => date('Y-m-d H:i:s', strtotime($array['expire_date'])),
+                'url' => $this->request->getVar('url'),
             ];
             return $this->response->setJSON(['message' => 'success', 'data' => $dataReturns]);
         }
@@ -49,9 +64,8 @@ class Home extends BaseController
         $model = new ShortUrlModel();
         $shortUrl = $model->where(['alias' => $alias])->first();
         if ($shortUrl) {
-            $currentDate = date('Y-m-d');
-            $expireDate = $shortUrl['expire_date'];
-            if ($currentDate > $expireDate) {
+            $now = date('Y-m-d H:i:s');
+            if(strtotime($now) > strtotime($shortUrl['expire_date'])) {
                 return redirect('404');
             }
             $model->update(['id' => $shortUrl['id']], ['hits' => $shortUrl['hits'] + 1]);

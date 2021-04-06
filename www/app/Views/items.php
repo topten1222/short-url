@@ -54,8 +54,8 @@
                         </div>
                         <div class="col-4">
                             <div class="url_options rounded-6" style="text-align: center">
-                                <a href="<?= $qrCode ?>&chs=200x200&choe=UTF-8" target="_blank">
-                                    <img src="<?= $qrCode ?>&chs=150x150&choe=UTF-8">
+                                <a href="<?= base_url('uploads/'.$shortUrl['alias'].'.png') ?>" target="_blank">
+                                    <img src="<?= base_url('uploads/'.$shortUrl['alias'].'.png') ?>">
                                 </a>
                                 <hr>
                                 <a href="<?= base_url('download/' . $shortUrl['alias']) ?>">
